@@ -1,3 +1,9 @@
+class DuplicateKeyException < Exception
+end
+
+class DuplicateSectionException < Exception
+end
+
 class Parser
 
   attr_accessor :filename
@@ -36,41 +42,47 @@ class Parser
     rc
   end
 
+  def process_line(line,stuff)
+    if line
+      v = GetValue(line)
+      k = GetKey(line)
+      if k && stuff.has_key?(k)
+        raise DuplicateKeyException
+      end
+      stuff[k] = v
+    end
+  end
+
   def get_key_val_pairs(secbody)
     lines = secbody.split(/[\n]+/)
     stuff = {}
-    lines.each do | line |
-      if line
-        v = GetValue(line)
-        k = GetKey(line)
-        if k && stuff.has_key?(k)
-          return :kErrorDuplicateKey
-        else
-          stuff[k] = v
-        end
+    lines.each do |line|
+      process_line(line, stuff)
+    end
+  end
+
+  def sectons_from_chunks(chunks, sections)
+    until chunks.empty?
+      secbody = chunks.shift
+      secname = chunks.shift
+      if sections.has_key?(secname)
+        fail DuplicateSectionException
+      else
+        pairs = get_key_val_pairs(secbody)
+        sections[secname] = pairs
       end
     end
   end
 
   def Parse
-    rc = 'foo'
     stuff = File.read(@filename)
-    elements = stuff.split(/\[(.*)\]/)
+    chunks = stuff.split(/\[(.*)\]/)
     sections = {}
-    until elements.empty?
-      secbody = elements.shift
-      secname = elements.shift
-      if sections.has_key?(secname)
-        return :kErrorDuplicateSection
-      else
-        pairs = get_key_val_pairs(secbody)
-        if pairs == :kErrorDuplicateKey
-          return :kErrorDuplicateKey
-        end
-        sections[secname] = pairs
-      end
-    end
-    rc
+    sectons_from_chunks(chunks, sections)
+  rescue DuplicateKeyException
+    return :kErrorDuplicateKey
+  rescue DuplicateSectionException
+    return :kErrorDuplicateSection
   end
 
   def SetInt(a,b,c)
