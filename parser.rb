@@ -4,8 +4,10 @@ end
 class DuplicateSectionException < Exception
 end
 
-class Parser
+class DoesntStartWithSection < Exception
+end
 
+class Parser
   attr_accessor :filename
 
   def initialize(f)
