@@ -81,6 +81,7 @@ class Parser
     chunks = stuff.split(/\[(.*)\]/)
     sections = {}
     sectons_from_chunks(chunks, sections)
+    return :kErrorSuccess
   rescue DuplicateKeyException
     return :kErrorDuplicateKey
   rescue DuplicateSectionException
