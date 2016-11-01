@@ -81,9 +81,13 @@ describe 'parser tests' do
     expect(p.Parse()).to eq(:kErrorCantOpenFile)
   end
 
-  it 'opens a valid file ' do
+  it 'opens a valid file' do
     p = Parser.new('spec/testdata.txt')
     expect(p.Parse()).to eq(:kErrorSuccess )
   end
 
+  it 'ensures file starts with section' do
+    p = Parser.new('spec/nosec.txt')
+    expect(p.Parse).to eq(:kErrorDoesntStartWithSection)
+  end
 end

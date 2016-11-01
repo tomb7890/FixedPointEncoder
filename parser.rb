@@ -64,9 +64,15 @@ class Parser
   end
 
   def sectons_from_chunks(chunks, sections)
+
+    if chunks.size <=1
+      fail DoesntStartWithSection
+    end
+
+    chunks.shift # discard initial empty chunk
     until chunks.empty?
-      secbody = chunks.shift
       secname = chunks.shift
+      secbody = chunks.shift
       if sections.has_key?(secname)
         fail DuplicateSectionException
       else
@@ -84,6 +90,8 @@ class Parser
     return :kErrorSuccess
   rescue DuplicateKeyException
     return :kErrorDuplicateKey
+  rescue DoesntStartWithSection
+    return :kErrorDoesntStartWithSection
   rescue DuplicateSectionException
     return :kErrorDuplicateSection
   rescue Errno::ENOENT
