@@ -76,4 +76,9 @@ describe 'parser tests' do
     expect(p.GetInt("header", "accessed")).to eq(0)
   end
 
+  it 'detects bad files' do
+    p = Parser.new('spec/bogus.txt')
+    expect(p.Parse()).to eq(:kErrorCantOpenFile)
+  end
+
 end

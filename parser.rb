@@ -85,6 +85,8 @@ class Parser
     return :kErrorDuplicateKey
   rescue DuplicateSectionException
     return :kErrorDuplicateSection
+  rescue Errno::ENOENT
+    return :kErrorCantOpenFile
   end
 
   def SetInt(a,b,c)
