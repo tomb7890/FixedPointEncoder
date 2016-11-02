@@ -48,9 +48,7 @@ class Parser
     if line
       v = get_value(line)
       k = get_key(line)
-      if k && stuff.has_key?(k)
-        raise DuplicateKeyException
-      end
+      raise DuplicateKeyException if k and stuff.key? k
       stuff[k] = v
     end
   end
@@ -64,21 +62,14 @@ class Parser
   end
 
   def sectons_from_chunks(chunks, sections)
-
-    if chunks.size <=1
-      fail DoesntStartWithSection
-    end
-
+    fail DoesntStartWithSection if chunks.size <= 1
     chunks.shift # discard initial empty chunk
     until chunks.empty?
       secname = chunks.shift
       secbody = chunks.shift
-      if sections.has_key?(secname)
-        fail DuplicateSectionException
-      else
-        pairs = get_key_val_pairs(secbody)
-        sections[secname] = pairs
-      end
+      fail DuplicateSectionException if sections.key?(secname)
+      pairs = get_key_val_pairs(secbody)
+      sections[secname] = pairs
     end
   end
 
