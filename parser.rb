@@ -14,7 +14,7 @@ class Parser
     @filename = f
   end
 
-  def GetKey(line)
+  def get_key(line)
     key = nil
     splitted = line.split(':')
     if splitted.size > 1
@@ -27,7 +27,7 @@ class Parser
     key
   end
 
-  def GetValue(line)
+  def get_value(line)
     value = nil
     splitted = line.split(':')
     if splitted.size > 1
@@ -46,8 +46,8 @@ class Parser
 
   def process_line(line,stuff)
     if line
-      v = GetValue(line)
-      k = GetKey(line)
+      v = get_value(line)
+      k = get_key(line)
       if k && stuff.has_key?(k)
         raise DuplicateKeyException
       end
