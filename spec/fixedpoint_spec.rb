@@ -50,12 +50,12 @@ describe 'more fixed point tests' do
 
     value = 0x80008000
     fp = FixedPoint.new(value)
-    expected = "-1.00"
+    expected = '-1.00'
     actual = fp.to_s
     expect(actual).to eq(expected)
 
     value = 0x00010000
-    expected = 2.00;
+    expected = 2.00
     fp = FixedPoint.new(value)
     actual = fp.to_f
     expect(actual).to eq(expected)
@@ -68,13 +68,13 @@ describe 'more fixed point tests' do
 
     value = 0x00327eb8
     fp = FixedPoint.new(value)
-    expected = "100.99"
+    expected = '100.99'
     actual = fp.to_s
     expect(actual).to eq(expected)
 
     value = 0x000191eb
     fp = FixedPoint.new(value)
-    expected = "3.14"
+    expected = '3.14'
     actual = fp.to_s
     expect(actual).to eq(expected)
   end
