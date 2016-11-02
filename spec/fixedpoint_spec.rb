@@ -34,7 +34,7 @@ describe 'more fixed point tests' do
     expect(actual).to eq(expected)
   end
 
-  it 'it transforms 100.99 into 0x00327eb8' do
+  it 'transforms 100.99 into 0x00327eb8' do
     value = 100.99
     expected = 0x00327eb8
     fp = FixedPoint.new(value)
@@ -42,23 +42,26 @@ describe 'more fixed point tests' do
     expect(actual).to eq(expected)
   end
 
-  it 'does string conversion' do
     #     * Idiomatic conversion to string (as <<optional sign>><<integer
     # passport_root>>.<<fractional part>>) For example, an instance of your Fixed
     # Point class initialized from an encoded value of 0x80008000 would be
     # converted to the string "-1.0".
 
+  it 'transforms 0x80008000 into the string -1.00' do
     value = 0x80008000
     fp = FixedPoint.new(value)
     expected = '-1.00'
     actual = fp.to_s
     expect(actual).to eq(expected)
+  end
 
+  it 'transforms 0x00010000 into 2.0' do
     value = 0x00010000
     expected = 2.00
     fp = FixedPoint.new(value)
     actual = fp.to_f
     expect(actual).to eq(expected)
+  end
 
     # value = -2.25;
     # fp = FixedPoint.new(value)
@@ -66,12 +69,15 @@ describe 'more fixed point tests' do
     # actual = fpto_s
     # expect(actual).to eq(expected)
 
+  it 'transforms 0x00327eb8 into the string 100.99' do
     value = 0x00327eb8
     fp = FixedPoint.new(value)
     expected = '100.99'
     actual = fp.to_s
     expect(actual).to eq(expected)
+  end
 
+  it 'transforms 0x000191eb into the string 3.14' do
     value = 0x000191eb
     fp = FixedPoint.new(value)
     expected = '3.14'
