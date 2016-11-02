@@ -26,19 +26,10 @@ describe 'parsing strings' do
   it 'requires keys to start in column zero' do
     badkey = ''
     expect(@parser.get_key(' key :  value')).to eq(badkey)
-    expect(badkey).to eq(@parser.get_key('   key :  value'))
   end
 
   it 'parses spaces inside a key ' do
-    spaceykey = 'spacey key'
-    expect(@parser.get_key('spacey key :  value')).to eq(spaceykey)
-
-    k = 'k'
-    v = 'v'
-    minimal = 'k:v'
-    expect(@parser.get_key('k : v  ')).to eq(k)
-    expect(@parser.get_key('k: v  ')).to eq(k)
-    expect(@parser.get_key('k :v ')).to eq(k)
+    expect(@parser.get_key('key with spaces in it:  value')).to eq('key with spaces in it')
   end
 
   it 'does parsing of section names ' do
@@ -46,7 +37,7 @@ describe 'parsing strings' do
     expected = 'Section demonstration'
 
     expect(@parser.SectionName('[Section demonstration]')).to eq(expected)
-    expect(@parser.SectionName('[   Section demonstration]')).to eq(expected) # current
+    expect(@parser.SectionName('[   Section demonstration]')).to eq(expected)
     expect(@parser.SectionName('[ Section demonstration     ]')).to eq(expected)
 
     boundaryCond1 = ''
@@ -60,17 +51,27 @@ describe 'parsing strings' do
     expect(@parser.SectionName('[ a] ')).to eq(boundaryCond2)
     expect(@parser.SectionName('[ a ] ')).to eq(boundaryCond2)
     expect(@parser.SectionName('[ a  ]')).to eq(boundaryCond2)
+  end
+end
 
+describe 'parsing strings' do
+
+  before(:each) do
+    @parser = Parser.new('spec/dupekeys.txt')
   end
 
   it 'checks for duplicate key' do
-    p = Parser.new('spec/dupekeys.txt')
     expect(@parser.Parse()).to eq(:kErrorDuplicateKey)
     expect(0).to eq(@parser.NumSections())
   end
+end
+
+describe 'duplicate sections' do
+  before(:each) do
+    @parser = Parser.new('spec/dupesecs.txt')
+  end
 
   it 'finds duplicate sections' do
-    p = Parser.new('spec/dupesecs.txt')
 
     expect(@parser.Parse()).to eq(:kErrorDuplicateSection)
     expect(@parser.NumSections).to eq (0)
@@ -79,10 +80,23 @@ describe 'parsing strings' do
     @parser.SetInt("header", "accessed", 0)
     expect(@parser.GetInt("header", "accessed")).to eq(0)
   end
+end
+
+
+describe 'parsing strings' do
+  before(:each) do
+    # @parser = Parser.new('keyvals.txt')
+    @parser = Parser.new('spec/bogus.txt')
+  end
 
   it 'detects bad files' do
-    p = Parser.new('spec/bogus.txt')
     expect(@parser.Parse()).to eq(:kErrorCantOpenFile)
+  end
+end
+
+describe 'foo ' do
+  before(:each) do
+    @parser = Parser.new('spec/testdata.txt')
   end
 
   it 'opens a valid file' do
@@ -90,8 +104,17 @@ describe 'parsing strings' do
     expect(@parser.Parse()).to eq(:kErrorSuccess )
   end
 
+end
+
+describe 'no sections ' do
+
+  before(:each) do
+    @parser = Parser.new ('spec/nosec.txt')
+  end
+
+
   it 'ensures file starts with section' do
-    p = Parser.new('spec/nosec.txt')
+    # p = Parser.new
     expect(@parser.Parse).to eq(:kErrorDoesntStartWithSection)
   end
 end
