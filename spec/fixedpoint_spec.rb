@@ -1,21 +1,17 @@
 require_relative '../fixedpoint.rb'
 
-def fmt thing
-  "0x#{thing.to_s(16)}"
-end
-
 describe 'fixed point tests' do
   it 'does the first test' do
     value = -2.50
     fp = FixedPoint.new(value)
     expected = 0x00004000
     actual = fp.fractional_portion_binary(fp.fraction_portion)
-    expect(actual).to eq(expected), "foo! expected #{fmt(expected)} actual #{fmt(actual)}"
+    expect(actual).to eq(expected)
     expect(fp.integer_portion).to eq 2
     expect(fp.fraction_portion).to eq 0.5
     expected = 0x80014000
     actual = fp.int
-    expect(actual).to eq(expected), "foo! expected #{fmt(expected)} actual #{fmt(actual)}"
+    expect(actual).to eq(expected)
   end
 
   it 'does another test' do
@@ -23,7 +19,7 @@ describe 'fixed point tests' do
     fp = FixedPoint.new(value)
     expected = 0x000191eb
     actual = fp.int
-    expect(actual).to eq(expected), "foo! expected #{fmt(expected)} actual #{fmt(actual)}"
+    expect(actual).to eq(expected)
   end
 
   it 'does yet a third test ' do
@@ -31,7 +27,7 @@ describe 'fixed point tests' do
     expected = 0x00327eb8
     fp = FixedPoint.new(value)
     actual = fp.int
-    expect(actual).to eq(expected), "foo! expected #{fmt(expected)} actual #{fmt(actual)}"
+    expect(actual).to eq(expected)
   end
 
   it 'does string conversion' do
