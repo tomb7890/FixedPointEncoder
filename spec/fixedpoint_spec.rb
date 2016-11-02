@@ -1,10 +1,5 @@
 require_relative '../fixedpoint.rb'
 
-def parsefile(p, filename)
-  page = File.open(filename, 'rb').read
-  p.parse(page)
-end
-
 def fmt thing
   "0x#{thing.to_s(16)}"
 end
