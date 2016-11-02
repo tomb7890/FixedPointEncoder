@@ -1,93 +1,97 @@
 require_relative '../parser.rb'
 
-describe 'parser tests' do
-  it 'does the first test' do
+describe 'parsing strings' do
+  before(:each) do
+    @parser = Parser.new('keyvals.txt')
+  end
 
-    p = Parser.new('testdata.txt')
+  it 'does the nominal case' do
+    string = 'key:value'
+    expect(@parser.get_key(string)).to eq('key')
+    expect('value').to eq(@parser.get_value(string))
+  end
 
-    key = 'key'
-    value = 'value'
-
-    sample1 = 'key:value'
-
-    expect(p.get_key(sample1)).to eq(key)
-    expect(value).to eq(p.get_value(sample1))
-
+  it 'parses spaces before the colon' do
     sample2 = 'key :value'
-    expect(key).to eq(p.get_key(sample2))
-    expect(value).to eq(p.get_value(sample2))
+    expect('key').to eq(@parser.get_key(sample2))
+    expect('value').to eq(@parser.get_value(sample2))
+  end
 
+  it 'parses spaces after the colon' do
     sample3 = 'key :  value'
-    expect(key).to eq(p.get_key( sample3 ))
-    expect(value).to eq(p.get_value( sample3 ))
+    expect('key').to eq(@parser.get_key(sample3))
+    expect('value').to eq(@parser.get_value(sample3))
+  end
 
-    # Each key must begin in column zero.
+  it 'requires keys to start in column zero' do
     badkey = ''
-    expect(p.get_key(' key :  value')).to eq(badkey)
-    expect(badkey).to eq(p.get_key('   key :  value'))
+    expect(@parser.get_key(' key :  value')).to eq(badkey)
+    expect(badkey).to eq(@parser.get_key('   key :  value'))
+  end
 
+  it 'parses spaces inside a key ' do
     spaceykey = 'spacey key'
-    expect(p.get_key('spacey key :  value')).to eq(spaceykey)
+    expect(@parser.get_key('spacey key :  value')).to eq(spaceykey)
 
     k = 'k'
     v = 'v'
     minimal = 'k:v'
-    expect(p.get_key('k : v  ')).to eq(k)
-    expect(p.get_key('k: v  ')).to eq(k)
-    expect(p.get_key('k :v ')).to eq(k)
+    expect(@parser.get_key('k : v  ')).to eq(k)
+    expect(@parser.get_key('k: v  ')).to eq(k)
+    expect(@parser.get_key('k :v ')).to eq(k)
   end
 
   it 'does parsing of section names ' do
     p = Parser.new('testdata.txt')
     expected = 'Section demonstration'
 
-    expect(p.SectionName('[Section demonstration]')).to eq(expected)
-    expect(p.SectionName('[   Section demonstration]')).to eq(expected) # current
-    expect(p.SectionName('[ Section demonstration     ]')).to eq(expected)
+    expect(@parser.SectionName('[Section demonstration]')).to eq(expected)
+    expect(@parser.SectionName('[   Section demonstration]')).to eq(expected) # current
+    expect(@parser.SectionName('[ Section demonstration     ]')).to eq(expected)
 
     boundaryCond1 = ''
-    expect(p.SectionName('[]')).to eq(boundaryCond1)
-    expect(p.SectionName(' []')).to eq(boundaryCond1)
-    expect(p.SectionName('[] ')).to eq(boundaryCond1)
+    expect(@parser.SectionName('[]')).to eq(boundaryCond1)
+    expect(@parser.SectionName(' []')).to eq(boundaryCond1)
+    expect(@parser.SectionName('[] ')).to eq(boundaryCond1)
 
     boundaryCond2 = 'a'
-    expect(p.SectionName('[a]')).to eq(boundaryCond2)
-    expect(p.SectionName('[a] ')).to eq(boundaryCond2)
-    expect(p.SectionName('[ a] ')).to eq(boundaryCond2)
-    expect(p.SectionName('[ a ] ')).to eq(boundaryCond2)
-    expect(p.SectionName('[ a  ]')).to eq(boundaryCond2)
+    expect(@parser.SectionName('[a]')).to eq(boundaryCond2)
+    expect(@parser.SectionName('[a] ')).to eq(boundaryCond2)
+    expect(@parser.SectionName('[ a] ')).to eq(boundaryCond2)
+    expect(@parser.SectionName('[ a ] ')).to eq(boundaryCond2)
+    expect(@parser.SectionName('[ a  ]')).to eq(boundaryCond2)
 
   end
 
   it 'checks for duplicate key' do
     p = Parser.new('spec/dupekeys.txt')
-    expect(p.Parse()).to eq(:kErrorDuplicateKey)
-    expect(0).to eq(p.NumSections())
+    expect(@parser.Parse()).to eq(:kErrorDuplicateKey)
+    expect(0).to eq(@parser.NumSections())
   end
 
   it 'finds duplicate sections' do
     p = Parser.new('spec/dupesecs.txt')
 
-    expect(p.Parse()).to eq(:kErrorDuplicateSection)
-    expect(p.NumSections).to eq (0)
+    expect(@parser.Parse()).to eq(:kErrorDuplicateSection)
+    expect(@parser.NumSections).to eq (0)
 
     #  even though invalid, can we cause any trouble
-    p.SetInt("header", "accessed", 0)
-    expect(p.GetInt("header", "accessed")).to eq(0)
+    @parser.SetInt("header", "accessed", 0)
+    expect(@parser.GetInt("header", "accessed")).to eq(0)
   end
 
   it 'detects bad files' do
     p = Parser.new('spec/bogus.txt')
-    expect(p.Parse()).to eq(:kErrorCantOpenFile)
+    expect(@parser.Parse()).to eq(:kErrorCantOpenFile)
   end
 
   it 'opens a valid file' do
     p = Parser.new('spec/testdata.txt')
-    expect(p.Parse()).to eq(:kErrorSuccess )
+    expect(@parser.Parse()).to eq(:kErrorSuccess )
   end
 
   it 'ensures file starts with section' do
     p = Parser.new('spec/nosec.txt')
-    expect(p.Parse).to eq(:kErrorDoesntStartWithSection)
+    expect(@parser.Parse).to eq(:kErrorDoesntStartWithSection)
   end
 end
