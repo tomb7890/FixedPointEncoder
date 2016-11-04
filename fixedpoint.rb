@@ -77,7 +77,7 @@ class FixedPoint
     (2**exp)
   end
 
-  def set_nth_digit(output, n)
-    output |= 1 << (FRACTION_BITS - n)
+  def set_nth_digit(int, n)
+    int |= 1 << (FRACTION_BITS - n)
   end
 end
