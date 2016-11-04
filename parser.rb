@@ -12,6 +12,11 @@ class Parser
 
   def initialize(f)
     @filename = f
+    @sections = {}
+  end
+
+  def num_sections
+    @sections.keys.size
   end
 
   def get_key(line)
@@ -44,40 +49,41 @@ class Parser
     rc
   end
 
-  def process_line(line,stuff)
+  def process_line(line,hash)
     if line
       v = get_value(line)
       k = get_key(line)
-      raise DuplicateKeyException if k and stuff.key? k
-      stuff[k] = v
+      raise DuplicateKeyException if k and hash.key? k
+      hash[k] = v
     end
   end
 
   def get_key_val_pairs(secbody)
     lines = secbody.split(/[\n]+/)
-    stuff = {}
+    hash = {}
     lines.each do |line|
-      process_line(line, stuff)
+      process_line(line, hash)
     end
+    hash
   end
 
-  def sectons_from_chunks(chunks, sections)
+  def sectons_from_chunks(chunks)
     fail DoesntStartWithSection if chunks.size <= 1
     chunks.shift # discard initial empty chunk
     until chunks.empty?
-      secname = chunks.shift
+      secname = chunks.shift.strip
       secbody = chunks.shift
-      fail DuplicateSectionException if sections.key?(secname)
+      fail DuplicateSectionException if @sections.key?(secname)
       pairs = get_key_val_pairs(secbody)
-      sections[secname] = pairs
+      @sections[secname] = pairs
     end
   end
 
   def Parse
-    stuff = File.read(@filename)
-    chunks = stuff.split(/\[(.*)\]/)
-    sections = {}
-    sectons_from_chunks(chunks, sections)
+    text = File.read(@filename)
+    chunks = text.split(/\[(.*)\]/)
+
+    sectons_from_chunks(chunks)
     return :kErrorSuccess
   rescue DuplicateKeyException
     return :kErrorDuplicateKey
@@ -97,7 +103,9 @@ class Parser
     0
   end
 
-  def NumSections()
-    0
+  def get_string(section, name)
+    s = @sections[section]
+    value = s[name]
   end
+
 end

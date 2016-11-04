@@ -62,7 +62,6 @@ describe 'parsing strings' do
 
   it 'checks for duplicate key' do
     expect(@parser.Parse()).to eq(:kErrorDuplicateKey)
-    expect(0).to eq(@parser.NumSections())
   end
 end
 
@@ -72,13 +71,7 @@ describe 'duplicate sections' do
   end
 
   it 'finds duplicate sections' do
-
     expect(@parser.Parse()).to eq(:kErrorDuplicateSection)
-    expect(@parser.NumSections).to eq (0)
-
-    #  even though invalid, can we cause any trouble
-    @parser.SetInt("header", "accessed", 0)
-    expect(@parser.GetInt("header", "accessed")).to eq(0)
   end
 end
 
@@ -107,14 +100,28 @@ describe 'foo ' do
 end
 
 describe 'no sections ' do
-
   before(:each) do
     @parser = Parser.new ('spec/nosec.txt')
   end
 
-
   it 'ensures file starts with section' do
-    # p = Parser.new
     expect(@parser.Parse).to eq(:kErrorDoesntStartWithSection)
+  end
+end
+
+describe 'test get string' do
+
+  before(:each) do
+    @parser = Parser.new('spec/testdata.txt')
+    @parser.Parse
+  end
+
+  it 'counts correctly the number of sections' do
+    expect(@parser.num_sections).to eq 3
+  end
+
+  it 'retrieves string' do
+    expected = 'all out of budget.'
+    expect(expected).to eq @parser.get_string('trailer', 'budget')
   end
 end
