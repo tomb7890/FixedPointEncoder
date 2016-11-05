@@ -77,8 +77,7 @@ end
 
 describe 'parsing strings' do
   before(:each) do
-    # @parser = Parser.new('keyvals.txt')
-    @parser = Parser.new('spec/bogus.txt')
+     @parser = Parser.new('spec/bogus.txt')
   end
 
   it 'detects bad files' do
@@ -136,5 +135,16 @@ describe 'test get string' do
 
     expect(@parser.get_string("meta data", "description")).to eq expected
   end
+end
 
+describe 'test get int' do
+  before(:each) do
+    @parser = Parser.new('spec/testdata.txt')
+    @parser.Parse
+  end
+
+  it 'retrieves an int' do
+    expected = 205;
+    expect(@parser.get_int('header', 'accessed')).to eq expected
+  end
 end

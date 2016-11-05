@@ -116,7 +116,12 @@ class Parser
 
   def get_string(section, name)
     s = @sections[section]
-    value = s[name]
+    s[name]
   end
 
+  def get_int(section, name)
+    s = @sections[section]
+    value = s[name]
+    value.to_i
+  end
 end
