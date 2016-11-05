@@ -24,8 +24,8 @@ describe 'parsing strings' do
   end
 
   it 'requires keys to start in column zero' do
-    badkey = ''
-    expect(@parser.get_key(' key :  value')).to eq(badkey)
+    result = nil
+    expect(@parser.get_key(' key :  value')).to eq(nil)
   end
 
   it 'parses spaces inside a key ' do
@@ -75,7 +75,6 @@ describe 'duplicate sections' do
   end
 end
 
-
 describe 'parsing strings' do
   before(:each) do
     # @parser = Parser.new('keyvals.txt')
@@ -124,4 +123,18 @@ describe 'test get string' do
     expected = 'all out of budget.'
     expect(expected).to eq @parser.get_string('trailer', 'budget')
   end
+
+  it 'retrieves a different string' do
+    expected = "I meant 'moderately,' not 'tediously,' above."
+    expect(expected).to eq @parser.get_string("meta data", "correction text")
+  end
+
+  it 'retrieves a multiline string' do
+    expected = "This is a tediously long description of the Art & Logic"
+    expected += " programming test that you are taking. Tedious isn't the right word, but"
+    expected += " it's the first word that comes to mind."
+
+    expect(@parser.get_string("meta data", "description")).to eq expected
+  end
+
 end

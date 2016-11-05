@@ -26,7 +26,7 @@ class Parser
       key = splitted[0].rstrip
       # return empty string if bad key (doesn't start in column zero)
       if key[0] == ' '
-        key = ''
+        key = nil
       end
     end
     key
@@ -38,6 +38,7 @@ class Parser
     if splitted.size > 1
       value = splitted[1].strip
     end
+    value
   end
 
   def SectionName(line)
@@ -53,12 +54,22 @@ class Parser
     if line
       v = get_value(line)
       k = get_key(line)
-      raise DuplicateKeyException if k and hash.key? k
-      hash[k] = v
+      store_key_and_value_into_hash(k,v,hash)
     end
   end
 
+  def store_key_and_value_into_hash(k,v,hash)
+    raise DuplicateKeyException if k and hash.key? k
+    hash[k] = v
+  end
+
+  def find_and_join_continuation_lines(secbody)
+    secbody.gsub!(/\r\n\s/, ' ')
+    secbody
+  end
+
   def get_key_val_pairs(secbody)
+    find_and_join_continuation_lines(secbody)
     lines = secbody.split(/[\n]+/)
     hash = {}
     lines.each do |line|
