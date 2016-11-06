@@ -158,3 +158,29 @@ describe 'test get numbers' do
     expect(@parser.get_float('header', 'foo')).to eq expected
   end
 end
+
+require 'fileutils'
+describe 'test setting values ' do
+  before(:each) do
+    FileUtils.cp('spec/testdata.txt', 'temp1.txt')
+  end
+
+  it 'sets a string in a file' do
+    parser1 = Parser.new('temp1.txt')
+    parser1.Parse()
+
+    expected = 'all out of budget.'
+    expect(parser1.get_string('trailer', 'budget')).to eq expected
+
+    parser1.set_string('trailer', 'budget', 'replacement text')
+
+    expected = 'replacement text'
+    parser2 = Parser.new('temp1.txt')
+    parser2.Parse()
+    expect(parser2.get_string('trailer', 'budget')).to eq expected
+  end
+
+  after(:each) do
+    FileUtils.rm('temp1.txt')
+  end
+end

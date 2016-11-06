@@ -119,6 +119,38 @@ class Parser
     s[name]
   end
 
+  def set_string(section_name, key_name, value )
+    @sections.keys.each do | sk |
+      if section_name == sk
+        section = @sections[sk]
+        if section.has_key? key_name
+          section[key_name] = value
+        end
+      end
+    end
+    write_file
+  end
+
+  def write_file
+    File.open(@filename, 'w') do |f|
+      @sections.keys.each do |k|
+        f.write("[#{k}]\n")
+        pair = @sections[k]
+        write_file_section(f,pair)
+      end
+    end
+  end
+
+  def write_file_section(f,pair)
+    pair.keys.each do | pk |
+      value = pair[pk]
+      if value && value.size > 1
+        f.write("#{pk}:#{value}\n")
+      end
+    end
+    f.write("\n\n")
+  end
+
   def get_int(section, name)
     s = @sections[section]
     value = s[name]
