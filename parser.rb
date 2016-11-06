@@ -78,7 +78,7 @@ class Parser
     hash
   end
 
-  def sectons_from_chunks(chunks)
+  def sections_from_chunks(chunks)
     fail DoesntStartWithSection if chunks.size <= 1
     chunks.shift # discard initial empty chunk
     until chunks.empty?
@@ -94,7 +94,7 @@ class Parser
     text = File.read(@filename)
     chunks = text.split(/\[(.*)\]/)
 
-    sectons_from_chunks(chunks)
+    sections_from_chunks(chunks)
     return :kErrorSuccess
   rescue DuplicateKeyException
     return :kErrorDuplicateKey
