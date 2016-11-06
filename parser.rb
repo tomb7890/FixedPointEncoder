@@ -124,4 +124,16 @@ class Parser
     value = s[name]
     value.to_i
   end
+
+  def get_float(section, name)
+    result = nil
+    s = @sections[section]
+    value = s[name]
+    if value
+      result = value.to_f
+    else
+      result = value
+    end
+    result
+  end
 end

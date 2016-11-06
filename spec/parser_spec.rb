@@ -137,14 +137,24 @@ describe 'test get string' do
   end
 end
 
-describe 'test get int' do
+describe 'test get numbers' do
   before(:each) do
     @parser = Parser.new('spec/testdata.txt')
     @parser.Parse
   end
 
   it 'retrieves an int' do
-    expected = 205;
+    expected = 205
     expect(@parser.get_int('header', 'accessed')).to eq expected
+  end
+
+  it 'retrieves a float' do
+    expected = 4.5
+    expect(@parser.get_float('header', 'budget')).to eq expected
+  end
+
+  it 'behaves well with nonexistent key name' do
+    expected = nil
+    expect(@parser.get_float('header', 'foo')).to eq expected
   end
 end
