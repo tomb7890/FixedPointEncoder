@@ -131,6 +131,10 @@ class Parser
     write_file
   end
 
+  def set_float(section_name, key_name, value)
+    set_string(section_name, key_name, value.to_s)
+  end
+
   def write_file
     File.open(@filename, 'w') do |f|
       @sections.keys.each do |k|

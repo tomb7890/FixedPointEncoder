@@ -180,6 +180,20 @@ describe 'test setting values ' do
     expect(parser2.get_string('trailer', 'budget')).to eq expected
   end
 
+  it 'sets a float in a file' do
+    parser1 = Parser.new('temp1.txt')
+    parser1.Parse()
+
+    expected = 4.5
+    expect(parser1.get_float('header', 'budget')).to eq expected
+    replacement = 12342.7
+    parser1.set_float('header', 'budget', replacement)
+
+    parser2 = Parser.new('temp1.txt')
+    parser2.Parse()
+    expect(parser2.get_float('header', 'budget')).to eq replacement
+  end
+
   after(:each) do
     FileUtils.rm('temp1.txt')
   end
